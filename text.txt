@@ -1,0 +1,32 @@
+[
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzQ5ZWFmODkzOWQzNDIwODczNmMyZWIiLCJpYXQiOjE3MzI5MzgzOTl9.DwJbp6yrBJRAqEC3bP6jTp5_AJ96uNdb3PpHqWK_USw
+
+
+]
+
+User Registration
+User Login
+User Logout
+Password Reset
+Fetch Profile
+Update Profile
+List Exams
+Exam Details
+Start Exam
+Submit Exam
+List Resources
+Resource Details
+Create Payment Intent
+Confirm Payment
+Contact or Feedback Submission
+Search API
+notice
+ads
+testimonials
+books
+cources
+
+
+
+
