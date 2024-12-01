@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'Free',
     },
-    profile: profileSchema,
+    profile: [profileSchema],
     courses: [courseSchema],
 
 }, { timestamps: true });

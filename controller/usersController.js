@@ -6,7 +6,7 @@ import usersModel from '../model/usersModel.js'; // Ensure correct path
 // Create User
 export const createUser = async (req, res) => {
     try {
-        const { username, email, password, accountType, profile, courses } = req.body;
+        const { username, email, password, accountType } = req.body;
 
         // Check if user already exists with the same email
         const existingUser = await usersModel.findOne({ email });
@@ -21,10 +21,8 @@ export const createUser = async (req, res) => {
         const newUser = new usersModel({
             username,
             email,
-            password: hashedPassword,  // Store the hashed password
-            profile,
+            password: hashedPassword,  // Store the hashed password 
             accountType,
-            courses
         });
 
         await newUser.save();
@@ -44,7 +42,7 @@ export const loginUser = async (req, res) => {
         // Check if the user exists
         const user = await usersModel.findOne({ email });
         if (!user) {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         // Compare password
