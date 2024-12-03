@@ -4,24 +4,25 @@ import usersModel from '../model/usersModel.js';
 export const createProfile = async (req, res) => {
     try {
         const { userId } = req;
-        const { name, bio, profilePhoto, contactNumber, address } = req.body;
+        const { photo, bio, contactNumber, address, skills, experience, jobPreferences } = req.body;
+
 
         // ইউজার খুঁজুন
         const user = await usersModel.findById(userId);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         // চেক করুন ইউজারের প্রোফাইল ইতিমধ্যে আছে কি না
-        if (user.profile && user.profile.length > 0) {
+        if (user.profile && Object.keys(user.profile).length > 0) {
             return res.status(400).json({ message: 'Profile already exists' });
         }
 
         // নতুন প্রোফাইল তৈরি করুন
-        user.profile = { name, bio, profilePhoto, contactNumber, address };
+        user.profile = { photo, bio, contactNumber, address, skills, experience, jobPreferences };
         await user.save();
 
         res.status(201).json({ message: 'Profile created successfully', profile: user.profile });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ message: error.message });
     }
 };
 
