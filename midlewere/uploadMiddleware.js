@@ -1,40 +1,43 @@
-import multer from 'multer';
-import axios from 'axios';
 
-// ImgBB API Key (Environment Variable থেকে নিয়ে আসুন)
-// const IMG_BB_API_KEY = process.env.IMGBB_API_KEY;
+import multer from "multer";
+import axios from "axios";
+import { IMG_BB_API_KEY } from "../constans.js";
 
-const IMG_BB_API_KEY = "862850e874b9b92bba3bbba84383b4dd";
+// Multer configuration for in-memory file storage
+const upload = multer({ storage: multer.memoryStorage() });
 
-// Multer configuration: Store image in memory
-const upload = multer({ storage: multer.memoryStorage() }).single("photo")
-
-const handleImageUpload = async (req, res, next) => {
-    console.log("Middleware Hit");  // Check if this log appears
-    console.log(req.file)
+const handleUploadFile = async (req, res, next) => {
     try {
-        if (req.body) {
-            const imageBuffer = req.file.buffer;
+        console.log("File:", req.file); // Multer দিয়ে ফাইল ডেটা প্রসেস
+        console.log("Body:", req.body); // অন্যান্য ফর্ম ডেটা
 
-            // Convert image buffer to base64 for ImgBB upload
-            const fileBase64 = imageBuffer.toString('base64');
-
-            // Upload image to ImgBB
-            const response = await axios.post('https://api.imgbb.com/1/upload', null, {
-                params: {
-                    key: IMG_BB_API_KEY,
-                    image: fileBase64
-                }
-            });
-            console.log(response)
-            // Add image URL to the request object
-            req.imageUrl = response.data.data.url;
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded" });
         }
 
-        next();
+        // Create FormData for ImgBB API
+        const formData = new FormData();
+        formData.append("key", IMG_BB_API_KEY);
+        formData.append("image", req.file.buffer.toString("base64")); // Convert file buffer to Base64
+
+        // Upload to ImgBB
+        const response = await axios.post("https://api.imgbb.com/1/upload", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        console.log("ImgBB Response:", response.data);
+
+        const imgUrl = response.data.data.url;
+        req.imageUrl = imgUrl
+
+        next()
+
     } catch (error) {
-        res.status(500).send({ error: 'Image upload failed: ' + error.message });
+        console.error("Error uploading file to ImgBB:", error.message);
+        res.status(500).json({ error: "File upload failed" });
     }
 };
 
-export { upload, handleImageUpload };
+export { upload, handleUploadFile };
